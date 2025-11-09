@@ -1,5 +1,0 @@
-# Ignore all generated config files
-*.json
-
-# But keep the example files
-!*.json.example
