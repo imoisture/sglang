@@ -106,9 +106,11 @@ class AdaptiveAllReduceManager:
         Args:
             hidden_size: Hidden dimension
             flashinfer_workspace_tensor: FlashInfer workspace (from FlashInferWorkspaceManager)
+                                        This parameter is deprecated and will be ignored.
+                                        Workspace is obtained automatically after initialization.
 
         Returns:
-            AdaptiveAllReduceLayer instance or None if adaptive allreduce is disabled
+            AdaptiveAllReduceLayer instance or None if not applicable
         """
         server_args = get_global_server_args()
         if not server_args.enable_adaptive_allreduce:
@@ -127,10 +129,15 @@ class AdaptiveAllReduceManager:
         if world_size <= 1:
             return None
 
+        # Get FlashInfer workspace after initialization
+        from sglang.srt.layers.flashinfer_comm_fusion import get_workspace_tensor
+
+        flashinfer_workspace = get_workspace_tensor()
+
         layer = AdaptiveAllReduceLayer(
             hidden_size=hidden_size,
             enable_adaptive_allreduce=True,
-            flashinfer_workspace_tensor=flashinfer_workspace_tensor,
+            flashinfer_workspace_tensor=flashinfer_workspace,
             torch_symm_mem_communicator=self.torch_symm_mem_communicator,
             custom_allreduce=self.custom_allreduce,
         )
@@ -162,7 +169,6 @@ _adaptive_allreduce_manager = AdaptiveAllReduceManager()
 
 def get_adaptive_allreduce_layer(
     hidden_size: int,
-    flashinfer_workspace_tensor: Optional[torch.Tensor] = None,
 ) -> Optional[AdaptiveAllReduceLayer]:
     """
     Get adaptive allreduce layer for the given hidden_size.
@@ -171,14 +177,12 @@ def get_adaptive_allreduce_layer(
 
     Args:
         hidden_size: Hidden dimension
-        flashinfer_workspace_tensor: FlashInfer workspace (optional)
 
     Returns:
         AdaptiveAllReduceLayer instance or None if disabled
     """
     return _adaptive_allreduce_manager.get_layer(
         hidden_size=hidden_size,
-        flashinfer_workspace_tensor=flashinfer_workspace_tensor,
     )
 
 

@@ -610,17 +610,11 @@ class CommunicateWithAllReduceAndLayerNormFn:
             # Use adaptive allreduce if enabled
             if server_args.enable_adaptive_allreduce:
                 from sglang.srt.layers.allreduce import get_adaptive_allreduce_layer
-                from sglang.srt.layers.flashinfer_comm_fusion import (
-                    get_workspace_tensor,
-                )
 
                 # Get adaptive allreduce layer for this hidden_size
                 hidden_size = hidden_states.shape[-1]
-                flashinfer_workspace = get_workspace_tensor()
-
                 adaptive_layer = get_adaptive_allreduce_layer(
                     hidden_size=hidden_size,
-                    flashinfer_workspace_tensor=flashinfer_workspace,
                 )
 
                 if adaptive_layer is not None:
