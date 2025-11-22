@@ -272,7 +272,7 @@ jobs:
         run: |
           rm -rf test/srt/performance_profiles_kimi_k2_thinking/
           cd test
-          python3 nightly/test_kimi_k2_thinking_perf.py
+          IS_BLACKWELL=1 python3 nightly/test_kimi_k2_thinking_perf.py
 
       - name: Publish Kimi-K2-Thinking traces to storage repo
         env:
