@@ -410,7 +410,7 @@ jobs:
         run: |
           rm -rf test/srt/performance_profiles_qwen3_235b/
           cd test
-          python3 nightly/test_qwen3_235b_perf.py
+          IS_BLACKWELL=1 python3 nightly/test_qwen3_235b_perf.py
 
       - name: Publish Qwen3-235B traces to storage repo
         env:
@@ -429,7 +429,7 @@ jobs:
         run: |
           rm -rf test/srt/performance_profiles_minimax_m2/
           cd test
-          python3 nightly/test_minimax_m2_perf.py
+          IS_BLACKWELL=1 python3 nightly/test_minimax_m2_perf.py
 
       - name: Publish MiniMax-M2 traces to storage repo
         env:
